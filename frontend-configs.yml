@@ -1,0 +1,45 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    artifact.spinnaker.io/location: kube-system
+    artifact.spinnaker.io/name: mockapp
+    artifact.spinnaker.io/type: kubernetes/deployment
+    moniker.spinnaker.io/application: mockapp
+    moniker.spinnaker.io/cluster: mockapp
+  labels:
+    app.kubernetes.io/managed-by: spinnaker
+    app.kubernetes.io/name: mockapp
+  name: mockapp
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: mockapp
+  template:
+    metadata:
+      annotations:
+        artifact.spinnaker.io/location: kube-system
+        artifact.spinnaker.io/name: mockapp
+        artifact.spinnaker.io/type: kubernetes/deployment
+        moniker.spinnaker.io/application: mockapp
+        moniker.spinnaker.io/cluster: mockapp
+      labels:
+        app.kubernetes.io/managed-by: spinnaker
+        app.kubernetes.io/name: mockapp
+        k8s-app: mockapp
+        task: monitoring
+    spec:
+      containers:
+        - command:
+          image: docker.imgo.tv/ci_register
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8111
+              scheme: HTTP
+            initialDelaySeconds: 180
+            timeoutSeconds: 5
+          name: mockapp
